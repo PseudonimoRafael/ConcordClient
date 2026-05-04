@@ -4,6 +4,9 @@ não estivesse aberto. já que a conexão pode ser perdida.
 """
 import socket
 import struct
+import time
+
+from ClosedConectionError import CloseConnectionError
 from addres import (HOST, PORT)
 
 class Comunication:
@@ -60,8 +63,13 @@ class Comunication:
         except socket.error as e:
             print(f"Erro ao enviar mensagem: {e}")
 
-    ## Ainda não implementado
     def SendAndRecive(self):
-        self.sendMesage()
-        self.reciveMessage()
-        return self.message 
+        for _ in range(5): # 5 tentativas de conseguir o dado
+            self.sendMesage()
+            self.reciveMessage()
+            if self.message != None:
+                return self.message
+
+            time.sleep(0.5)
+        self.closeComunication()
+        raise CloseConnectionError("O servidor não está respondendo")
