@@ -2,8 +2,11 @@
 
 from models import db, Usuario, Messages
 from peewee import IntegrityError
+import datetime
 
-def inicializar_banco():
+def inicializar_banco(username):
+    # Cada usuário terá seu próprio arquivo de banco de dados (ex: concord_teste1.db)
+    db.init(f'concord_{username}.db')
     db.connect(reuse_if_open=True)
     db.create_tables([Usuario, Messages], safe=True)
 
@@ -18,6 +21,20 @@ def salvar_mensagem(sender, receiver, content):
     salvar_usuario(receiver)
     remetente = Usuario.get(Usuario.nickname == sender)
     destinatario = Usuario.get(Usuario.nickname == receiver)
+    
+    ultima_msg = (Messages
+                  .select()
+                  .where((Messages.sender_id == remetente) & (Messages.reciver_id == destinatario))
+                  .order_by(Messages.id.desc())
+                  .first())
+    
+    if ultima_msg and ultima_msg.content == content:
+        agora = datetime.datetime.now()
+        diferenca = (agora - ultima_msg.timestamp).total_seconds()
+        
+        if diferenca < 1.0:
+            return
+
     Messages.create(
         content=content,
         sender_id=remetente,

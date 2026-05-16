@@ -29,7 +29,6 @@ class ChatApp:
         self.typing_timer = None
         self.estou_digitando = False
 
-        inicializar_banco()
 
         try:
             self.com.connect()
@@ -41,6 +40,10 @@ class ChatApp:
         self.tela_login()
 
     def tela_login(self):
+        self.historico = {}
+        self.contato_ativo = None
+        self.estou_digitando = False
+        
         self.root.geometry("320x420")
         self.frame_login = tk.Frame(self.root, bg="#f0f0f0")
         self.frame_login.pack(fill=tk.BOTH, expand=True)
@@ -201,11 +204,16 @@ class ChatApp:
     def adicionar_ao_historico(self, contato, mensagem):
         if contato not in self.historico:
             self.historico[contato] = []
+        
         self.historico[contato].append(mensagem)
 
         if contato == self.contato_ativo:
             self.caixa_texto.config(state='normal')
-            self.caixa_texto.insert(tk.END, mensagem + "\n")
+            
+            self.caixa_texto.delete(1.0, tk.END)
+            for msg in self.historico[contato]:
+                self.caixa_texto.insert(tk.END, msg + "\n")
+                
             self.caixa_texto.config(state='disabled')
             self.caixa_texto.see(tk.END)
 
@@ -213,6 +221,7 @@ class ChatApp:
         tipo = pacote.get("type")
 
         if tipo == "LOGIN_OK":
+            inicializar_banco(self.username)
             self.root.after(0, self.tela_chat)
         elif tipo == "LOGIN_FAIL":
             self.root.after(0, lambda: messagebox.showerror("Erro", "Credenciais incorretas!"))
@@ -237,7 +246,8 @@ class ChatApp:
             pass
 
     def mostrar_digitando(self, nickname):
-        self.label_digitando.config(text=f"{nickname} está digitando...")
+        if nickname == self.contato_ativo:
+            self.label_digitando.config(text=f"{nickname} está digitando...")
 
     def esconder_digitando(self):
         self.label_digitando.config(text="")
