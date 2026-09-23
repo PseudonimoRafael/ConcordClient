@@ -2,3 +2,4 @@ ignore_me/
 __pycache__/
 concord.db
 .env
+.venv
