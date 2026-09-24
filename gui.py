@@ -5,14 +5,30 @@ from tkinter import messagebox
 from comunication import Comunication
 from historico import inicializar_banco, salvar_mensagem, buscar_historico
 
-ASCII_ART = """
-  _    _              ____         _ 
- | |  | |     /\     |  _ \       | |
- | |  | |    /  \    | |_) |      | |
- | |  | |   / /\ \   |  _ <   _   | |
- | |__| |  / ____ \  | |_) | | |__| |
-  \____/  /_/    \_\ |____/   \____/ 
-                             
+ASCII_ART = """                               ._                             
+                              |* ;                            
+            `*-.              |"":                            
+             \  \             |""                             
+              .  \            |   :                           
+              `   \           |                               
+               \   \          |    ;               +.         
+                .   \         |                   *._`-.      
+                `    \        |     :          .-*'  `. `.    
+                _\    \.__..--**--...L_   _.-*'      .'`*'    
+               /  `*-._\   -.       .-*"*+._       .'         
+              :        ``*-._*.     \      _J.   .'           
+          .-*'`*-.       ;     `.    \    /   `.'             
+      .-*'  _.-*'.     .-'       `-.  `-.:   _.'`-.           
+   +*' _.-*'      `..-'             `*-. `**'      `-.        
+    `*'          .-'      ._            `*-._         `.      
+       [bug]  .-'         `.`-.____..+-**""'         .*"`.    
+         ._.-'          _.-*'':$$$;._$              /     `.  
+      .-'  `.      _.-*' `*-.__T$P   `"**--..__    :        `.
+.'..-'       \_.-*'                            `"**--..___.-*'
+`. `.    _.-*'                                                
+  `. `:*'                                                     
+    `. `.                                                     
+      `*
 """
 
 class ChatApp:
@@ -44,50 +60,49 @@ class ChatApp:
         self.contato_ativo = None
         self.estou_digitando = False
         
-        self.root.geometry("320x420")
-        self.frame_login = tk.Frame(self.root, bg="#f0f0f0")
+        self.root.geometry("750x750")
+        self.frame_login = tk.Frame(self.root, bg="#152B3C")
         self.frame_login.pack(fill=tk.BOTH, expand=True)
 
-        frame_topo = tk.Frame(self.frame_login, bg="#f0f0f0", pady=20)
+        frame_topo = tk.Frame(self.frame_login, bg="#152B3C", pady=20)
         frame_topo.pack(fill=tk.X)
 
         tk.Label(
             frame_topo,
             text=ASCII_ART,
             font=("Courier", 10, "bold"),
-            fg="#555555",
-            bg="#f0f0f0",
+            fg="#CFF09E",
+            bg="#152B3C",
             justify="center"
         ).pack()
 
         tk.Label(
             frame_topo,
-            text="ZapZap",
+            text="Concord",
             font=("Arial", 9),
-            fg="#888888",
-            bg="#f0f0f0"
+            fg="#CFF09E",
+            bg="#152B3C"
         ).pack()
 
-        frame_campos = tk.Frame(self.frame_login, bg="#f0f0f0", pady=20, padx=30)
+        frame_campos = tk.Frame(self.frame_login, bg="#152B3C", pady=20, padx=30)
         frame_campos.pack(fill=tk.BOTH, expand=True)
 
-        tk.Label(frame_campos, text="Nickname", bg="#f0f0f0", anchor="w").pack(fill=tk.X)
+        tk.Label(frame_campos, text="Nickname", bg="#152B3C", anchor="w").pack(fill=tk.X)
         self.entry_user = tk.Entry(frame_campos, width=30)
         self.entry_user.pack(fill=tk.X, pady=(2, 12))
 
-        tk.Label(frame_campos, text="Senha", bg="#f0f0f0", anchor="w").pack(fill=tk.X)
+        tk.Label(frame_campos, text="Senha", bg="#152B3C", anchor="w").pack(fill=tk.X)
         self.entry_pass = tk.Entry(frame_campos, show="*", width=30)
         self.entry_pass.pack(fill=tk.X, pady=(2, 20))
 
-        frame_botoes = tk.Frame(frame_campos, bg="#f0f0f0")
+        frame_botoes = tk.Frame(frame_campos, bg="#152B3C")
         frame_botoes.pack(fill=tk.X)
 
         tk.Button(
             frame_botoes,
             text="Entrar",
             command=self.acao_login,
-            bg="#555555",
-            fg="white",
+            bg="#E47C5D",
             width=10
         ).pack(side=tk.LEFT)
 
@@ -95,7 +110,7 @@ class ChatApp:
             frame_botoes,
             text="Registrar",
             command=self.acao_registrar,
-            bg="#f0f0f0",
+            bg="#E47C5D",
             width=10
         ).pack(side=tk.RIGHT)
 
@@ -110,30 +125,32 @@ class ChatApp:
         senha = self.entry_pass.get()
         self.com.send_packet({"type": "REGISTER", "sender": user, "content": senha})
 
+# QueroTela
     def tela_chat(self):
-        self.root.geometry("600x500")
+        self.root.geometry("806x500")
         self.root.resizable(True, True)
         self.frame_login.destroy()
-        self.frame_chat = tk.Frame(self.root)
+        self.frame_chat = tk.Frame(self.root, bg="#152B3C")
         self.frame_chat.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
 
         self.frame_chat.columnconfigure(1, weight=1)
         self.frame_chat.rowconfigure(1, weight=1)
 
-        tk.Label(self.frame_chat, text="Contatos").grid(row=0, column=0)
-        tk.Label(self.frame_chat, text="Mensagens").grid(row=0, column=1)
+        tk.Label(self.frame_chat, text="Contatos", bg="#152B3C", fg="#CFF09E",).grid(row=0, column=0)
+        tk.Label(self.frame_chat, text="Mensagens", bg="#152B3C", fg="#CFF09E",).grid(row=0, column=1)
 
-        self.lista_contatos = tk.Listbox(self.frame_chat, width=20)
+        # Quero
+        self.lista_contatos = tk.Listbox(self.frame_chat, width=20, bg="#033649", fg="#CFF09E")
         self.lista_contatos.grid(row=1, column=0, sticky="ns", padx=5)
         self.lista_contatos.bind("<<ListboxSelect>>", self.selecionar_contato)
 
-        self.caixa_texto = tk.Text(self.frame_chat, state='disabled')
+        self.caixa_texto = tk.Text(self.frame_chat, state='disabled', bg="#033649", fg="#CFF09E")
         self.caixa_texto.grid(row=1, column=1, sticky="nsew")
 
         self.label_digitando = tk.Label(self.frame_chat, text="", fg="gray", font=("Arial", 8, "italic"))
         self.label_digitando.grid(row=2, column=1, sticky="w")
 
-        frame_envio = tk.Frame(self.frame_chat)
+        frame_envio = tk.Frame(self.frame_chat,)
         frame_envio.grid(row=3, column=0, columnspan=2, sticky="we", pady=5)
         frame_envio.columnconfigure(0, weight=1)
 
@@ -141,7 +158,7 @@ class ChatApp:
         self.entry_msg.grid(row=0, column=0, sticky="we", padx=5)
         self.entry_msg.bind("<KeyRelease>", self.ao_digitar)
 
-        tk.Button(frame_envio, text="Enviar", command=self.acao_enviar).grid(row=0, column=1, padx=5)
+        tk.Button(frame_envio, text="Enviar", command=self.acao_enviar, bg="#E47C5D").grid(row=0, column=1, padx=5)
 
     def ao_digitar(self, event):
         if not self.contato_ativo:
